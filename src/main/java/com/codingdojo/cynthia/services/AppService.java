@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
+import com.codingdojo.cynthia.models.Project;
 import com.codingdojo.cynthia.models.User;
 import com.codingdojo.cynthia.repositories.ProjectRepository;
 import com.codingdojo.cynthia.repositories.UserRepository;
@@ -66,6 +67,21 @@ public class AppService {
 			return null;
 		}
 		
+	}
+	
+	/*Guardamos proyecto*/
+	public Project saveProject(Project project) {
+		return projectRepo.save(project);
+	}
+	
+	/*Encontrar un usuario en base a su id*/
+	public User findUser(Long id) {
+		return userRepo.findById(id).orElse(null);
+	}
+	
+	/*Guarda cambios en usuario*/
+	public User saveUser(User user) {
+		return userRepo.save(user);
 	}
 	
 }

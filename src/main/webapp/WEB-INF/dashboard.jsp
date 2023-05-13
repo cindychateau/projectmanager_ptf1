@@ -14,6 +14,7 @@
 			<h1>Welcome ${userInSession.firstName} !</h1>
 			<a href="/logout" class="btn btn-danger">Logout</a>
 		</nav>
+		<a href="/new" class="btn btn-success">+ New Project</a>
 	</div>
 </body>
 </html>
