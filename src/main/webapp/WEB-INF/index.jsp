@@ -11,6 +11,7 @@
 </head>
 <body>
 	<div class="container">
+		<h1 class="text-center">Project Manager</h1>
 		<div class="row">
 			<div class="col-6">
 				<h2>Sign In</h2>

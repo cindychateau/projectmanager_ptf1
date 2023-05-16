@@ -1,5 +1,7 @@
 package com.codingdojo.cynthia.services;
 
+import java.util.List;
+
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -83,5 +85,39 @@ public class AppService {
 	public User saveUser(User user) {
 		return userRepo.save(user);
 	}
+	
+	/*Regresa lista de Proyectos en los que un usuario está*/
+	public List<Project> findMyJoinedProjects(User userInSession) {
+		return projectRepo.findByUsersJoinedContains(userInSession);
+	}
+	
+	/*Regresa lista de Proyectos en los que un usuario NO está */
+	public List<Project> findOtherProjects(User userInSession) {
+		return projectRepo.findByUsersJoinedNotContains(userInSession);
+	}
+	
+	/*Regrese un objeto de proyecto en base a su id*/
+	public Project findProject(Long id) {
+		return projectRepo.findById(id).orElse(null);
+	}
+	
+	/*Usuario se une a proyecto*/
+	public void joinProject(Long userId, Long projectId) {
+		User myUser = findUser(userId); //Obtiene el objeto de usuario
+		Project myProject = findProject(projectId); //Obtiene el objeto de proyecto
+		
+		myProject.getUsersJoined().add(myUser);
+		projectRepo.save(myProject);
+	}
+	
+	/*Usuario sale de proyecto*/
+	public void leaveProject(Long userId, Long projectId) {
+		User myUser = findUser(userId); //Obtiene el objeto de usuario
+		Project myProject = findProject(projectId); //Obtiene el objeto de proyecto
+		
+		myProject.getUsersJoined().remove(myUser);
+		projectRepo.save(myProject);
+	}
+	
 	
 }

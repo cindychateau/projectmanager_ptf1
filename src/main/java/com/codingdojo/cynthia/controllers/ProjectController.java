@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import com.codingdojo.cynthia.models.Project;
@@ -32,9 +33,13 @@ public class ProjectController {
 		}
 		/*====Revisa que mi usuario haya iniciado sesión====*/
 		
-		//Pendiente: Lista de proyectos a los que pertenece mi usuario
+		//Lista de proyectos a los que pertenece mi usuario
+		//model.addAttribute("myProjects", service.findMyJoinedProjects(userInMethod));
+		model.addAttribute("myProjects", service.findMyJoinedProjects(userInMethod));
 		
-		//Pendiente: Lista de proyectos a los que NO pertenece mi usuario
+		//Lista de proyectos a los que NO pertenece mi usuario
+		//model.addAttribute("otherProjects", service.findOtherProjects(userInMethod));
+		model.addAttribute("otherProjects", service.findOtherProjects(userInMethod));
 		
 		return "dashboard.jsp";
 		
@@ -84,6 +89,37 @@ public class ProjectController {
 		}
 		
 		
+	}
+	
+	@GetMapping("/join/{projectId}")
+	public String join(@PathVariable("projectId") Long projectId,
+					   HttpSession session) {
+		/*====Revisa que mi usuario haya iniciado sesión====*/
+		User userInMethod = (User)session.getAttribute("userInSession");
+		
+		if(userInMethod == null) {
+			return "redirect:/";
+		}
+		/*====Revisa que mi usuario haya iniciado sesión====*/
+		
+		service.joinProject(userInMethod.getId(), projectId);
+		return "redirect:/dashboard";
+	}
+	
+	@GetMapping("/leave/{projectId}")
+	public String leave(@PathVariable("projectId") Long projectId,
+			   			HttpSession session) {
+		/*====Revisa que mi usuario haya iniciado sesión====*/
+		User userInMethod = (User)session.getAttribute("userInSession");
+		
+		if(userInMethod == null) {
+			return "redirect:/";
+		}
+		/*====Revisa que mi usuario haya iniciado sesión====*/
+		
+		service.leaveProject(userInMethod.getId(), projectId);
+		
+		return "redirect:/dashboard";
 	}
 	
 	
