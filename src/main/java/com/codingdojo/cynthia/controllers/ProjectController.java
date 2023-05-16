@@ -1,5 +1,7 @@
 package com.codingdojo.cynthia.controllers;
 
+import java.util.List;
+
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 
 import com.codingdojo.cynthia.models.Project;
 import com.codingdojo.cynthia.models.User;
@@ -120,6 +123,57 @@ public class ProjectController {
 		service.leaveProject(userInMethod.getId(), projectId);
 		
 		return "redirect:/dashboard";
+	}
+	
+	@GetMapping("/edit/{projectId}")
+	public String edit(@PathVariable("projectId") Long id,
+					   @ModelAttribute("project") Project project,
+					   HttpSession session,
+					   Model model) {
+		/*====Revisa que mi usuario haya iniciado sesión====*/
+		User userInMethod = (User)session.getAttribute("userInSession");
+		
+		if(userInMethod == null) {
+			return "redirect:/";
+		}
+		/*====Revisa que mi usuario haya iniciado sesión====*/
+		
+		Project projectEdit = service.findProject(id);
+		
+		//Revisamos que el lead coincida con el usuario en sesion
+		if(userInMethod.getId() != projectEdit.getLead().getId()) {
+			return "redirect:/dashboard";
+		}
+		
+		//model.addAttribute("project", projectEdit);
+		model.addAttribute("project", projectEdit);
+		return "edit.jsp";
+		
+	}
+	
+	@PutMapping("/update")
+	public String update(@Valid @ModelAttribute("project") Project project,
+						 BindingResult result,
+						 HttpSession session) {
+		/*====Revisa que mi usuario haya iniciado sesión====*/
+		User userInMethod = (User)session.getAttribute("userInSession");
+		
+		if(userInMethod == null) {
+			return "redirect:/";
+		}
+		/*====Revisa que mi usuario haya iniciado sesión====*/
+		
+		
+		if(result.hasErrors()) {
+			return "edit.jsp";
+		} else {
+			//Los usuarios que forman parte del proyecto los agregamos de nuevo
+			Project thisProject = service.findProject(project.getId());
+			List <User> usersJoinedInProject = thisProject.getUsersJoined(); //Usuarios que antes se habían unido
+			project.setUsersJoined(usersJoinedInProject); //Agregando al project del formulario
+			service.saveProject(project);
+			return "redirect:/dashboard";
+		}
 	}
 	
 	

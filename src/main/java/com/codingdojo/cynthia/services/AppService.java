@@ -88,7 +88,7 @@ public class AppService {
 	
 	/*Regresa lista de Proyectos en los que un usuario está*/
 	public List<Project> findMyJoinedProjects(User userInSession) {
-		return projectRepo.findByUsersJoinedContains(userInSession);
+		return projectRepo.findByUsersJoinedContainsOrderByTitleDesc(userInSession);
 	}
 	
 	/*Regresa lista de Proyectos en los que un usuario NO está */
